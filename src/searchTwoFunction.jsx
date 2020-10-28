@@ -1,3 +1,4 @@
+
 import React, { Component } from "react"
 
 /*
@@ -15,33 +16,30 @@ export default class Test extends Component{
         images:[],
         query: "",
     }
-    onClickSearch = (e) => {
+    componentDidMount() {
+        fetch(`https://api.unsplash.com/photos/?client_id=${unsplashKey}`)
+            .then(resultat => resultat.json())
+            .then(lesImages => this.setState({images:[...lesImages]}))
+    }
+    clickSearch = (e) => {
+
         e.preventDefault();
 
-        if(!this.state.query){
-            fetch(`https://api.unsplash.com/photos/?client_id=${unsplashKey}`)
-                .then(resultat => resultat.json())
-                .then(lesImages => this.setState({images:[...lesImages]}))
-        } else {
-
-            //récupérer la valeur du champ de formulaire
-            fetch(`https://api.unsplash.com/search/photos/?client_id=${unsplashKey}&query=${this.state.query}`)
-                .then(resultat => resultat.json())
-                .then(lesImages => this.setState({images: lesImages.results}))
-        }
+        //récupérer la valeur du champ de formulaire
+        fetch(`https://api.unsplash.com/search/photos/?client_id=${unsplashKey}&query=${this.state.query}`)
+            .then(resultat => resultat.json())
+            .then(lesImages => this.setState({images: lesImages.results}))
     }
-
     onUpdateQuery = (e) => {
         this.setState({query: e.target.value})
     }
-
     render() {
         return(
             <React.Fragment>
                 <form action="#">
                     <label htmlFor="img" id="">Search an image</label>
                     <input type="text" id="img" onChange={this.onUpdateQuery}/>
-                    <button onClick={this.onClickSearch}>Search</button>
+                    <button onClick={this.clickSearch}>Search</button>
                 </form>
 
                 <ul>
@@ -58,6 +56,7 @@ export default class Test extends Component{
                     }
                 </ul>
             </React.Fragment>
+
         )
     }
 }
